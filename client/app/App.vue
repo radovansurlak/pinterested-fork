@@ -67,7 +67,6 @@ export default {
       let data = this.keywordData;
 
       var csvContent = "";
-      debugger
       data.forEach(function(infoArray, index) {
         let dataString = infoArray.join(";");
         csvContent += index < data.length ? dataString + "\n" : dataString;
@@ -112,7 +111,11 @@ export default {
 <style lang="scss">
 #application-wrapper {
   border-radius: 5px;
-  margin: 50px auto 0 auto;
+  margin-top: 50px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  width: 100%;
   padding: 20px;
   font-family: Lato;
   max-width: 900px;
