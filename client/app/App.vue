@@ -130,6 +130,10 @@ export default {
   font-weight: 600;
 }
 
+.v-btn.download-button {
+  margin-bottom: 20px;
+}
+
 .keyword-group {
   display: block;
   list-style: none;
