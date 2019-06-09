@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "parcel ./client/index.html",
     "start": "node index.js",
-    "build": "parcel build ./client/index.html --out-dir dist --no-source-maps"
+    "build": "npm install && parcel build ./client/index.html --out-dir dist --no-source-maps"
   },
   "engines": {
     "node": "12.x"
