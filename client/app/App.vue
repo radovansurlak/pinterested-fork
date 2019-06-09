@@ -20,7 +20,13 @@
         type="submit"
       >Get Keywords</v-btn>
     </v-form>
-
+    <v-btn
+      class="download-button"
+      @click="downloadCSV"
+      v-if="keywordData"
+      color="success"
+      type="submit"
+    >Download as CSV</v-btn>
     <ul class="keyword-group" v-for="(keywordGroup, index) in keywordData" :key="index">
       <li v-for="keyword in keywordGroup" :key="keyword">{{keyword}}</li>
     </ul>
@@ -56,6 +62,48 @@ export default {
         response.json().then(jsonData => (this.keywordData = jsonData));
         this.isLoading = false;
       });
+    },
+    downloadCSV() {
+      let data = this.keywordData;
+
+      var csvContent = "";
+      debugger
+      data.forEach(function(infoArray, index) {
+        let dataString = infoArray.join(";");
+        csvContent += index < data.length ? dataString + "\n" : dataString;
+      });
+
+      // The download function takes a CSV string, the filename and mimeType as parameters
+      // Scroll/look down at the bottom of this snippet to see how download is called
+      var download = function(content, fileName, mimeType) {
+        var a = document.createElement("a");
+        mimeType = mimeType || "application/octet-stream";
+
+        if (navigator.msSaveBlob) {
+          // IE10
+          navigator.msSaveBlob(
+            new Blob([content], {
+              type: mimeType
+            }),
+            fileName
+          );
+        } else if (URL && "download" in a) {
+          //html5 A[download]
+          a.href = URL.createObjectURL(
+            new Blob([content], {
+              type: mimeType
+            })
+          );
+          a.setAttribute("download", fileName);
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else {
+          location.href =
+            "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
+        }
+      };
+      download(csvContent, "keywords.csv", "text/csv;encoding:utf-8");
     }
   }
 };
@@ -64,7 +112,7 @@ export default {
 <style lang="scss">
 #application-wrapper {
   border-radius: 5px;
-  margin: 20px auto 0 auto;
+  margin: 50px auto 0 auto;
   padding: 20px;
   font-family: Lato;
   max-width: 900px;
@@ -77,7 +125,8 @@ export default {
   display: flex;
 }
 
-.v-btn.search-button {
+.v-btn.search-button,
+.v-btn.download-button {
   font-weight: 600;
 }
 
