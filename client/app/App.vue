@@ -2,6 +2,7 @@
   <v-app id="application-wrapper">
     <v-form class="keyword-form">
       <v-text-field
+        class="keyword-input"
         label="Keyword"
         placeholder="Type in your Pinterest keyword"
         v-model="keywordInput"
@@ -47,7 +48,7 @@ export default {
       this.isLoading = true;
       this.keywordData = null;
       const data = { keyword: this.keywordInput, levels: this.numberOfLevels };
-      fetch("http://localhost:3000/getKeywords", {
+      fetch("/getKeywords", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, cors, *same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -126,6 +127,7 @@ export default {
 
 .keyword-form {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .v-btn.search-button,
@@ -146,6 +148,10 @@ export default {
 
   background-color: #fff;
   border-radius: 10px;
+}
+
+.keyword-input {
+  margin-right: 10px;
 }
 </style>
 
