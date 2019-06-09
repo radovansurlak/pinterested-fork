@@ -1,0 +1,27 @@
+{
+  "name": "pinterest_kw",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build ./client/index.html --out-dir dist"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cssnano": "^4.1.10",
+    "express": "^4.17.1",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "vue": "^2.6.10",
+    "vue-hot-reload-api": "^2.3.3",
+    "vuetify": "^1.5.14"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "sass": "^1.21.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
