@@ -3,7 +3,8 @@ const request = require('request-promise-native');
 function processKeywordResearch(keyword, maxLevels) {
   return new Promise(async (resolve, reject) => {
     const allLevelKeywords = [];
-    async function processArray(array, func, level, maxLevels) {
+
+    function processArray(array, func, level, maxLevels) {
       return new Promise(async (resolve, reject) => {
         const arrayOfPromises = [];
         array.forEach((item) => {
@@ -32,9 +33,10 @@ function processKeywordResearch(keyword, maxLevels) {
         method: 'GET',
         mode: 'cors',
       });
+
       const parsedResponse = JSON.parse(response);
       const keywordItems = parsedResponse.resource_response.data.items;
-      const filteredKeywords = keywordItems.filter(keyword => keyword.type === 'query');
+      const filteredKeywords = keywordItems.filter(keywordItem => keywordItem.type === 'query');
       const keywordStrings = filteredKeywords.map(keywordItem => keywordItem.label);
 
       const filteredKeywordStrings = keywordStrings.filter(keywordString => keywordString !== keyword);

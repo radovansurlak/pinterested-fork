@@ -45,6 +45,7 @@ export default {
   }),
   methods: {
     getKeywords() {
+      // const timeNow = performance.now();
       this.isLoading = true;
       this.keywordData = null;
       const data = { keyword: this.keywordInput, levels: this.numberOfLevels };
@@ -62,6 +63,7 @@ export default {
       }).then((response, error) => {
         response.json().then(jsonData => (this.keywordData = jsonData.flat()));
         this.isLoading = false;
+        // console.log(performance.now() - timeNow)
       });
     },
     downloadCSV() {

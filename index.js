@@ -21,7 +21,8 @@ app.use(express.static('dist'));
 
 app.post('/getKeywords', async (req, res) => {
   const { keyword, levels } = req.body;
-  const keywords = await processKeywordResearch(keyword, levels);
+  // const keywords = await processKeywordResearch(keyword, levels);
+  const keywords = await processKeywordResearch(keyword, 3);
   res.send(keywords);
 });
 
