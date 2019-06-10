@@ -67,10 +67,9 @@ export default {
     downloadCSV() {
       let data = this.keywordData;
 
-      var csvContent = "";
-      data.forEach(function(infoArray, index) {
-        let dataString = infoArray.join(";");
-        csvContent += index < data.length ? dataString + "\n" : dataString;
+      let csvContent = "";
+      data.forEach(function(keyword, index) {
+        csvContent += index < data.length ? keyword + "\n" : keyword;
       });
 
       // The download function takes a CSV string, the filename and mimeType as parameters
