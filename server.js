@@ -1,4 +1,5 @@
-const request = require('request-promise-native');
+// const request = require('request-promise-native');
+const axios = require('axios');
 
 function processKeywordResearch(keyword, maxLevels) {
   return new Promise(async (resolve, reject) => {
@@ -19,23 +20,26 @@ function processKeywordResearch(keyword, maxLevels) {
     async function getAllKeywordStrings(keyword) {
       const count = 20;
 
-      const response = await request(`https://sk.pinterest.com/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=%2F&data=%7B%22options%22%3A%7B%22count%22%3A${count}%2C%22term%22%3A%22${encodeURI(keyword)}%22%7D%2C%22context%22%3A%7B%7D%7D&_=1560072372706`, {
-        credentials: 'include',
-        headers: {
-          accept: 'application/json, text/javascript, */*, q=0.01',
-          'cache-control': 'no-cache',
-          pragma: 'no-cache',
-          'x-app-version': '4f67d66',
-          'x-pinterest-appstate': 'active',
-          'x-requested-with': 'XMLHttpRequest',
-        },
-        body: null,
-        method: 'GET',
-        mode: 'cors',
-      });
+      const requestURL = `https://www.pinterest.co.uk/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${keyword}"},"context":{}}&_=${Date.now()}"`;
 
-      const parsedResponse = JSON.parse(response);
-      const keywordItems = parsedResponse.resource_response.data.items;
+      let response = undefined;
+
+      try {
+        response = await axios(encodeURI(requestURL), {
+          credentials: 'include',
+          headers: {
+            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'de,pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
+          },
+          referrer: 'https://www.pinterest.co.uk/',
+          referrerPolicy: 'origin',
+          body: null,
+          method: 'GET',
+          mode: 'cors',
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      const keywordItems = response.data.resource_response.data.items;
       const filteredKeywords = keywordItems.filter(keywordItem => keywordItem.type === 'query');
       const keywordStrings = filteredKeywords.map(keywordItem => keywordItem.label);
 
