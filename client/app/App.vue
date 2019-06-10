@@ -28,8 +28,8 @@
       color="success"
       type="submit"
     >Download as CSV</v-btn>
-    <ul class="keyword-group" v-for="(keywordGroup, index) in keywordData" :key="index">
-      <li v-for="keyword in keywordGroup" :key="keyword">{{keyword}}</li>
+    <ul class="keyword-group" v-for="(keyword, index) in keywordData" :key="index">
+      <li :key="keyword">{{keyword}}</li>
     </ul>
   </v-app>
 </template>
@@ -60,7 +60,7 @@ export default {
         referrer: "no-referrer", // no-referrer, *client
         body: JSON.stringify(data) // body data type must match "Content-Type" header
       }).then((response, error) => {
-        response.json().then(jsonData => (this.keywordData = jsonData));
+        response.json().then(jsonData => (this.keywordData = jsonData.flat()));
         this.isLoading = false;
       });
     },
@@ -142,7 +142,7 @@ export default {
 .keyword-group {
   display: block;
   list-style: none;
-  padding: 15px;
+  padding: 10px 15px;
   margin-bottom: 10px;
   box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
 
