@@ -7,12 +7,12 @@
         placeholder="Type in your Pinterest keyword"
         v-model="keywordInput"
       ></v-text-field>
-      <v-text-field
+      <!-- <v-text-field
         label="Levels (How deep you want the keywords to go)"
         placeholder="Number of levels"
         v-model="numberOfLevels"
         type="number"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-btn
         class="search-button"
         @click.prevent="getKeywords"
@@ -40,7 +40,7 @@ export default {
   data: () => ({
     keywordData: null,
     keywordInput: "",
-    numberOfLevels: 2,
+    // numberOfLevels: 2,
     isLoading: false
   }),
   methods: {
