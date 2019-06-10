@@ -3,13 +3,15 @@ const request = require('request-promise-native');
 function processKeywordResearch(keyword, maxLevels) {
   return new Promise(async (resolve, reject) => {
     const allLevelKeywords = [];
-
     async function processArray(array, func, level, maxLevels) {
       return new Promise(async (resolve, reject) => {
-        for (const item of array) {
-          await func(item, level, maxLevels);
-        }
-        resolve('Done processing array');
+        const arrayOfPromises = [];
+        array.forEach((item) => {
+          arrayOfPromises.push(func(item, level, maxLevels));
+        });
+        Promise.all(arrayOfPromises).then(() => {
+          resolve('Done processing array');
+        });
       });
     }
 
