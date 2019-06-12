@@ -75,15 +75,27 @@ function processKeywordResearch(keyword, maxLevels) {
         const re = new RegExp(conversions[conversionKey], 'g');
         str = str.replace(re, conversionKey);
       });
-      
+
       return str;
+    }
+    function removeSpecials(str) {
+      const lower = str.toLowerCase();
+      const upper = str.toUpperCase();
+
+      let res = '';
+      for (let i = 0; i < lower.length; ++i) {
+        if (lower[i] != upper[i] || lower[i].trim() === '') { res += str[i]; }
+      }
+      return res;
     }
 
     async function getAllKeywordStrings(keyword) {
       const count = 20;
 
+      const sanitizedKeyword = removeSpecials(convertAccentedCharacters(keyword));
 
-      const requestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${convertAccentedCharacters(keyword)}"}}&_=${Date.now()}"`;
+
+      const requestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
 
       let response;
 
@@ -91,7 +103,7 @@ function processKeywordResearch(keyword, maxLevels) {
         response = await axios(encodeURI(requestURL), {
           credentials: 'include',
           headers: {
-            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'de,pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
+            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'de,sen-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
           },
           referrer: 'https://www.pinterest.co.uk/',
           referrerPolicy: 'origin',

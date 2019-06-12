@@ -1,5 +1,35 @@
 <template>
   <v-app id="application-wrapper">
+    <social-sharing
+      url="https://pinterested-prototype.herokuapp.com"
+      title="Awesome Pinterest Keyword Research tool"
+      description="Keyword research tool that helps you find the best keyword ideas for Pinterest."
+      quote="Keyword research tool that helps you find the best keyword ideas for Pinterest."
+      hashtags="pinterest, marketing, keyword, research"
+      twitter-user="pinterested"
+      inline-template
+    >
+      <section class="social-sharing">
+        <network class="social-network" network="facebook">
+          <i class="social-icon icon-facebook"/>
+        </network>
+        <network class="social-network" network="linkedin">
+          <i class="social-icon icon-linkedin"/>
+        </network>
+        <network class="social-network" network="reddit">
+          <i class="social-icon icon-reddit"/>
+        </network>
+        <network class="social-network" network="pinterest">
+          <i class="social-icon icon-pinterest-square"/>
+        </network>
+        <network class="social-network" network="twitter">
+          <i class="social-icon icon-twitter"/>
+        </network>
+        <network class="social-network" network="whatsapp">
+          <i class="social-icon icon-whatsapp"/>
+        </network>
+      </section>
+    </social-sharing>
     <v-form class="keyword-form">
       <v-text-field
         class="keyword-input"
@@ -7,18 +37,13 @@
         placeholder="Type in your Pinterest keyword"
         v-model="keywordInput"
       ></v-text-field>
-      <!-- <v-text-field
-        label="Levels (How deep you want the keywords to go)"
-        placeholder="Number of levels"
-        v-model="numberOfLevels"
-        type="number"
-      ></v-text-field> -->
       <v-btn
         class="search-button"
         @click.prevent="getKeywords"
         :loading="isLoading"
         color="success"
         type="submit"
+        :disabled="keywordInputIsEmpty"
       >Get Keywords</v-btn>
     </v-form>
     <v-btn
@@ -40,30 +65,32 @@ export default {
   data: () => ({
     keywordData: null,
     keywordInput: "",
-    // numberOfLevels: 2,
     isLoading: false
   }),
+  computed: {
+    keywordInputIsEmpty() {
+      return this.keywordInput.length === 0;
+    }
+  },
   methods: {
     getKeywords() {
-      // const timeNow = performance.now();
       this.isLoading = true;
       this.keywordData = null;
       const data = { keyword: this.keywordInput, levels: this.numberOfLevels };
       fetch("/getKeywords", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, cors, *same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
         headers: {
           "Content-Type": "application/json"
         },
-        redirect: "follow", // manual, *follow, error
-        referrer: "no-referrer", // no-referrer, *client
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
+        redirect: "follow",
+        referrer: "no-referrer",
+        body: JSON.stringify(data)
       }).then((response, error) => {
         response.json().then(jsonData => (this.keywordData = jsonData.flat()));
         this.isLoading = false;
-        // console.log(performance.now() - timeNow)
       });
     },
     downloadCSV() {
@@ -124,6 +151,27 @@ export default {
   & .application--wrap {
     min-height: auto;
   }
+}
+
+.social-sharing {
+  display: flex;
+  height: 60px;
+}
+
+.social-icon {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  font-size: 40px;
+  cursor: pointer;
+  transition: all 250ms;
+  &:hover {
+    font-size: 50px;
+  }
+}
+
+.social-network {
+  outline: none;
 }
 
 .keyword-form {
