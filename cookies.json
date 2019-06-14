@@ -1,0 +1,123 @@
+[
+  {
+    "name": "_pinterest_pfob",
+    "value": "enabled",
+    "domain": ".pinterest.com",
+    "path": "/",
+    "expires": 1655139901.27674,
+    "size": 22,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "_b",
+    "value": "\"AUFtw5xfulRNkoqVflOe2UcEZ9AbHmSbtu2+/dEqOqYh0kaAud69Kz4MlOmPLZqwVTc=\"",
+    "domain": ".pinterest.com",
+    "path": "/",
+    "expires": 1875891898.432434,
+    "size": 72,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "_pinterest_sess",
+    "value": "\"TWc9PSZDYnJtWkI2TzhBcENqVVJybTRnWDhmcGgyWDJqYjZiR0NqQW4zbUxZbEpaek1OdCtrUnJ2OEpBT21YTUNoYTlnQjdjOFR0OU9MUXNlUHZFWGtzSTh3ZzN0S292dkRSNW8wUWhMQWFVSldzR0Faa0FMZWljZjhnenRIZVBsY2JTbmN6UFFXdyt4Z29tcHdjRDJ0cWpCTUVqT0cvTEQvR2lJVDR6eGlMclNseXRhQmJKUXR0WDhpZ2VPQ2lHRzllNGNQanRPVjdTNTZYOS95cWp5VGF4cVIxd0lhZmdrL1ovQlI2aXBrT1lqekVXdnNIdXlnZ2xRWFI4Q3IvNFlMVjc2Rm5ueGtOaUlIbm5hT1BoZGxIVlR3N0YrTTN4UTArRjB3eXNWMDNLdTl2blR3NUk0c0pBem02Smw3dHhTK0REMmE5OVpZWWtiZVZlVEFJeDdhYlJyRWVMd0xjRXR3eGJvWUNTUE1IM2J5L0kvdUpHdWEwZ1U2YTh5V3hTczJkMlBINGVqcWpsWEZsZXYzeGxlV011MUx6WUxZMDZqQWVjdjVieUR2Yjc1enQwVk5YT3NuSlM3Z3p5ZVY1MU1PMXFxQVlFSERzYnRpOXczK0o4U1F0TDk2TnIvT3lYNkdPU2pwY3RWWkFUck55QzN6OVhzUDN3YzNteEIyRUVyQk1DUWVTOWdiU0ZabG9LdlFveHZkbkZ6dVZhYWpobWdVSXhXcWhaaTUwRWV0ZU5uZWpudGh6YlhRb1RtemNxSkRRbU9vc1lBN2FNUkVzMnhodkYwQTNabitTU0ZMSFgxRy94RUF4SEtrMWRhQm5HTTdXbThQQWFNbGNqdnhjWjdaUUExRllrZWpPSmtiVm1RNzh1VnNHWS8xbisxV1g3U1lzVVdXT0dJa3Y5aVlVdjR0TVQ4OWR2dDVHWERoZ2FZNCsweFhTSGtoeElKSnBQbXIrSTlsbFJkQlRrMTFpSms5SlEzU01EbU9MYmo0SldHRUNQVWxncDI3dTZ5emFCQVd6N3NhS0p1bmV6cER3K2loZkh5WFpycDlTbzl6TnVnNzdxSE8va3AwNS9SeUhWTmlCTU1EWTBxQkV2bkxTYzVJbFl3eXh1NEJ5OFNmVVlxUS9teEN6cEJzRFJnaFUzcG84V0dmd0JTSThWNGluWT0mZEU1SjJmb0JwUEUvYWpVV3lzS1UyczlKRXJJPQ==\"",
+    "domain": ".pinterest.com",
+    "path": "/",
+    "expires": 1591635897.432796,
+    "size": 1233,
+    "httpOnly": true,
+    "secure": true,
+    "session": false
+  },
+  {
+    "name": "_auth",
+    "value": "1",
+    "domain": ".pinterest.com",
+    "path": "/",
+    "expires": 1591635897.432232,
+    "size": 6,
+    "httpOnly": true,
+    "secure": true,
+    "session": false
+  },
+  {
+    "name": "csrftoken",
+    "value": "S6uJ6Zuf5eysZYsvqn55rzETJl8NKStN",
+    "domain": "ads.pinterest.com",
+    "path": "/",
+    "expires": 1591981498.432338,
+    "size": 41,
+    "httpOnly": false,
+    "secure": true,
+    "session": false
+  },
+  {
+    "name": "__utmz",
+    "value": "243623637.1560531890.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
+    "domain": ".ads.pinterest.com",
+    "path": "/",
+    "expires": 1576299901,
+    "size": 76,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "__utmb",
+    "value": "243623637.1.9.1560531890",
+    "domain": ".ads.pinterest.com",
+    "path": "/",
+    "expires": 1560533701,
+    "size": 30,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "cm_sub",
+    "value": "none",
+    "domain": "ads.pinterest.com",
+    "path": "/",
+    "expires": 1592067901,
+    "size": 10,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "__utma",
+    "value": "243623637.1200204454.1560531890.1560531890.1560531890.1",
+    "domain": ".ads.pinterest.com",
+    "path": "/",
+    "expires": 1623603901,
+    "size": 61,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  },
+  {
+    "name": "__utmc",
+    "value": "243623637",
+    "domain": ".ads.pinterest.com",
+    "path": "/",
+    "expires": -1,
+    "size": 15,
+    "httpOnly": false,
+    "secure": false,
+    "session": true
+  },
+  {
+    "name": "G_ENABLED_IDPS",
+    "value": "google",
+    "domain": ".ads.pinterest.com",
+    "path": "/",
+    "expires": 253402257600,
+    "size": 20,
+    "httpOnly": false,
+    "secure": false,
+    "session": false
+  }
+]
