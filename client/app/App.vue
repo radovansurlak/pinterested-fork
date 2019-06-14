@@ -53,13 +53,18 @@
       color="success"
       type="submit"
     >Download as CSV</v-btn>
-    <ul class="keyword-group" v-for="(keyword, index) in keywordData" :key="index">
-      <li :key="keyword">{{keyword}}</li>
+    <ul class="keyword-list">
+      <li class="keyword-item" v-for="(keywordData, index) in keywordData" :key="index">
+        <span class="keyword-title">{{keywordData.keyword}}</span>
+        <span class="keyword-volume">{{keywordData.metrics.KEYWORD_QUERY_VOLUME}}</span>
+      </li>
     </ul>
   </v-app>
 </template>
 
 <script>
+const { parse } = require("json2csv");
+
 export default {
   name: "App",
   data: () => ({
@@ -76,33 +81,34 @@ export default {
     getKeywords() {
       this.isLoading = true;
       this.keywordData = null;
+      const { keywordInput } = this;
       const data = { keyword: this.keywordInput, levels: this.numberOfLevels };
-      fetch("/getKeywords", {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
+      fetch(`/analyse/${keywordInput}`, {
         headers: {
           "Content-Type": "application/json"
-        },
-        redirect: "follow",
-        referrer: "no-referrer",
-        body: JSON.stringify(data)
+        }
       }).then((response, error) => {
         response.json().then(jsonData => (this.keywordData = jsonData.flat()));
         this.isLoading = false;
       });
     },
     downloadCSV() {
-      let data = this.keywordData;
+      let { keywordData } = this;
 
-      let csvContent = "";
-      data.forEach(function(keyword, index) {
-        csvContent += index < data.length ? keyword + "\n" : keyword;
-      });
+      const flattenObject = (obj) =>
+        Object.keys(obj).reduce((acc, k) => {
+          if (typeof obj[k] === "object")
+            Object.assign(acc, flattenObject(obj[k], k));
+          else acc[k] = obj[k];
+          return acc;
+        }, {});
 
-      // The download function takes a CSV string, the filename and mimeType as parameters
-      // Scroll/look down at the bottom of this snippet to see how download is called
+      const flattenedData = keywordData.map(flattenObject);
+      console.log(flattenedData[0]);
+
+      const csvData = parse(flattenedData);
+      // console.log(csvData);
+
       var download = function(content, fileName, mimeType) {
         var a = document.createElement("a");
         mimeType = mimeType || "application/octet-stream";
@@ -131,7 +137,7 @@ export default {
             "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
         }
       };
-      download(csvContent, "keywords.csv", "text/csv;encoding:utf-8");
+      // download(csvData, "keywords.csv", "text/csv;encoding:utf-8");
     }
   }
 };
@@ -188,15 +194,25 @@ export default {
   margin-bottom: 20px;
 }
 
-.keyword-group {
-  display: block;
-  list-style: none;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
+.keyword {
+  &-item {
+    display: flex;
+    justify-content: space-between;
 
-  background-color: #fff;
-  border-radius: 10px;
+    list-style: none;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
+
+    background-color: #fff;
+    border-radius: 10px;
+  }
+  &-list {
+    padding-left: 0;
+  }
+  &-title {
+    font-weight: 600;
+  }
 }
 
 .keyword-input {

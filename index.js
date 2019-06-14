@@ -1,17 +1,19 @@
 const express = require('express');
 const compression = require('compression');
+const puppeteer = require('puppeteer');
+const jsonfile = require('jsonfile');
 
 const bodyParser = require('body-parser');
 
-const axios = require('axios');
 const request = require('request-promise-native');
 
 
-const processKeywordResearch = require('./getKeywordData');
+// const processKeywordResearch = require('./getKeywordData');
 
 const app = express();
 
 app.use(compression());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -21,60 +23,78 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use(express.static('dist'));
 
-app.get('/pinterest-api/:keyword', async (req, res) => {
-  const { keyword } = req.params;
-  console.log(keyword);
+function restoreSession(page) {
+  return new Promise(async (resolve, reject) => {
+    const cookies = jsonfile.readFileSync('./cookies.json');
+
+    if (cookies) {
+      if (cookies.length !== 0) {
+        for (const cookie of cookies) {
+          await page.setCookie(cookie);
+        }
+        resolve('Session has been loaded in the browser');
+      }
+    }
+  });
+}
 
 
-  // const { code: authorizationCode, state } = req.query;
-  // const response = await axios.post(`https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5038129916334353792&client_secret=3cc5770ef2a2fb0327e9b397250c23ebdd9c1639aa9d2ab8ff04ebadd6b1f87b&code=${authorizationCode}`);
-  // const { access_token: accessToken } = response.data;
-  // console.log(accessToken);
+(async () => {
+  const port = process.env.PORT || 3000;
 
-  try {
-    // const test = await axios(`https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?access_token=${accessToken}&country=US&month=6&keywords=banana&advertiser=549759187271`);
+  const loginEmail = 'cadebul@marketlink.info';
+  const loginPassword = 'smajdovamanka123';
+  const advertiserId = '549759196505';
 
+  // const loginEmail = 'yulepic@hostguru.top';
+  // const loginPassword = 'Lc:he;J9[/s89upL';
+  // const advertiserId = '549759192251';
 
-    const headers = {
-      Accept: 'application/json, text/plain, */*',
-      'Accept-Language': 'en-US,en;q=0.5',
-      Referer: 'https://ads.pinterest.com/',
-      Origin: 'https://ads.pinterest.com',
-      DNT: '1',
-      Connection: 'keep-alive',
-      Pragma: 'no-cache',
-      'Cache-Control': 'no-cache',
-      TE: 'Trailers',
-      Cookie: '_ir=0; _auth=1; _pinterest_sess=TWc9PSZEeW9nemhjYXJqaCtYQmw2blA4VmlWOExrWVZ4TkZDYUs3YUZKSzA1RHY3SzhtY1NyZ3J4NmM1WW85dGF4UnhmMmNoblprODF6YkYwL0tiWlpQRVFUeTdJMCtua1JrRkdMbVZTZTJENGNOUUtud2lKZE4xcGlmSEl6NlkwQWxnR25MSitNTmlob0NPUFdMRHNMN0lnd2Fua2V0Q1NudkZxZEZPUFhzM1RoVVRsWVkyQ0xaN25mMzFoZUtPUUFONkdUNHhvcno3Kys2VDJ4dFBTTW1jUnJNZGlzOEtuM05xaGlIdktPN3ZVNXlWSWpmeGRmWHBVSUd1WFJoSllVWElBWDhlaytxKzZ6N3VqT0JmYXZJdGVkQmxScEEwWXJXaUNoSXVIQ3V1QWx1VWlta0NwVVJsL2wwN3hSeG56YmF4QThRU2E2VHZ5WWpzUERPMk9sN3V4a2RuMFQ4UnZKVG9jRVlKV0R1UXJZZnduUlg2OHdUenJKUDJNMWx6N1ZLYjFIOEg4eWJoQVBlWFNMbFVlSW1KdnpWY0dzdGcxUUtBMlRVZWZNVXRaUmZaZjBzUklYVlB6UzhuZnI4aHpvSmpXa3BKUE5SK0xDTTc1dWd1WDd1TUZBQmRzUVJZS05sTlE2c2RiVElLMldubllTVFlOTnVmaldWRFljNThsZnQxQWwvdHJxbzl5Mm1pY2JObTlPVDdzWU1XTEpaUzRRTEpSdTVTaDBqOEVtbFQyRmtORGxvQjFkakZacnYwcERqczRTN3ZCbmJDUXV6NUZZK0NHVzhqSUVhLzVDUnc0VFZEUkhyYzV1c1Z0MGprWUkrVmNqdDk3YTlIK3h2MS9FYXZXSi9yeHJVYzBDMU9YU0Z1eVBGbTZDVHBLcW1FU2ZrekhaWTFPcXlmdTVDeU1HWnBILy9qaXAvQVZhaGlvKy9ZcXIwS0gwaWRKai9ETXIxS01ubDRmUTgyS1ZEK29ORDJHcmg5OTh2Rm9nS05jS2NEZjRqRWVUVUtZcXFYZHJTZndSbEc4eC8wb0NDUWhzV2d3bklLM0NXN1VMZlJxWjRiNm80eXErUnZkZmMydHJVOER2SDdLMlFnUjl1RVcrbU5zbmFQSDVvZFBYQ2R4SWMyMzZjUU44QXB2MktONTZaWnE4ZXBVRDZRbnFUND0malExckh2WlNHcmxoNXZLcTZ4WThLZzRGaGFFPQ==; _b=AT7pYH0Hdj1IyJuTw8nn4fpmWeOM4EWyXK0xPuFAEKewN0tPHUyLCyvbkfXsRIzzDRg=; _pinterest_pfob=enabled',
-    };
-
-    const options = {
-      url: `https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?country=US&month=6&keywords=${keyword}&advertiser=549759187271`,
-      headers,
-    };
-
-    const response = await request(options);
+  // const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await restoreSession(page);
 
 
-    console.log(JSON.parse(response));
+  await page.goto('https://ads.pinterest.com');
 
-    
-    res.json(JSON.parse(response));
-  } catch (error) {
-    console.log(error);
-  }
-});
+  // await Promise.all([
+  //   page.click('[data-test-id="unauthheader-loginbutton"]'),
+  //   page.waitForNavigation({ waitUntil: 'networkidle0' }),
+  // ]);
+  // await page.type('#email', loginEmail);
+  // await page.type('#password', loginPassword);
+  // await Promise.all([
+  //   page.click('.red.SignupButton.active'),
+  //   page.waitForNavigation({ waitUntil: 'networkidle0' }),
+  // ]);
 
 
-app.post('/getKeywords', async (req, res) => {
-  const { keyword, levels } = req.body;
-  // const keywords = await processKeywordResearch(keyword, levels);
-  const keywords = await processKeywordResearch(keyword, 3);
-  res.send(keywords);
-});
+  // const cookiesObject = await page.cookies();
+  // // Write cookies to temp file to be used in other profile pages
+  // jsonfile.writeFile('./cookies.json', cookiesObject, { spaces: 2 },
+  //   (err) => {
+  //     if (err) {
+  //       console.log('The file could not be written.', err);
+  //     }
+  //     console.log('Session has been successfully saved');
+  //   });
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Pinteresting app listening on port ${port}!`));
+  app.get('/analyse/:keyword', async (req, res) => {
+    const { keyword } = req.params;
+
+
+    const data = await page.evaluate(async (keyword) => {
+      const data = await fetch(`https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?country=US&month=6&keywords=${keyword}&advertiser=549759196505`, {
+        credentials: 'include', headers: { accept: 'application/json, text/plain, */*', 'sec-fetch-mode': 'cors' }, referrer: 'https://ads.pinterest.com/', referrerPolicy: 'origin', body: null, method: 'GET', mode: 'cors',
+      });
+      const parsedData = await data.json();
+      return JSON.stringify(parsedData.data);
+    }, keyword);
+    res.json(JSON.parse(data));
+  });
+
+  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+})();
