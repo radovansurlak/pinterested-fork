@@ -53,10 +53,14 @@
       color="success"
       type="submit"
     >Download as CSV</v-btn>
-    <ul class="keyword-list">
+    <ul v-if="keywordData" class="keyword-list">
+      <header class="keyword-header">
+        <p>Keyword</p>
+        <p>Search Volume</p>
+      </header>
       <li class="keyword-item" v-for="(keywordData, index) in keywordData" :key="index">
         <span class="keyword-title">{{keywordData.keyword}}</span>
-        <span class="keyword-volume">{{keywordData.metrics.KEYWORD_QUERY_VOLUME}}</span>
+        <span class="keyword-volume">{{keywordData.KEYWORD_QUERY_VOLUME}}</span>
       </li>
     </ul>
   </v-app>
@@ -64,6 +68,16 @@
 
 <script>
 const { parse } = require("json2csv");
+
+import "babel-polyfill";
+
+const flattenObject = obj =>
+  Object.keys(obj).reduce((acc, k) => {
+    if (typeof obj[k] === "object")
+      Object.assign(acc, flattenObject(obj[k], k));
+    else acc[k] = obj[k];
+    return acc;
+  }, {});
 
 export default {
   name: "App",
@@ -78,36 +92,28 @@ export default {
     }
   },
   methods: {
-    getKeywords() {
-      this.isLoading = true;
-      this.keywordData = null;
+    async getKeywords() {
       const { keywordInput } = this;
-      const data = { keyword: this.keywordInput, levels: this.numberOfLevels };
-      fetch(`/analyse/${keywordInput}`, {
+      this.isLoading = true;
+
+      const response = await fetch(`/analyse/${keywordInput}`, {
         headers: {
           "Content-Type": "application/json"
         }
-      }).then((response, error) => {
-        response.json().then(jsonData => (this.keywordData = jsonData.flat()));
-        this.isLoading = false;
       });
+      const parsedResponse = await response.json();
+      const flattenedData = parsedResponse.flat();
+      const flattenedObjectData = flattenedData.map(flattenObject);
+      this.keywordData = flattenedObjectData;
+      this.isLoading = false;
     },
     downloadCSV() {
       let { keywordData } = this;
 
-      const flattenObject = (obj) =>
-        Object.keys(obj).reduce((acc, k) => {
-          if (typeof obj[k] === "object")
-            Object.assign(acc, flattenObject(obj[k], k));
-          else acc[k] = obj[k];
-          return acc;
-        }, {});
-
       const flattenedData = keywordData.map(flattenObject);
-      console.log(flattenedData[0]);
 
       const csvData = parse(flattenedData);
-      // console.log(csvData);
+      console.log(csvData);
 
       var download = function(content, fileName, mimeType) {
         var a = document.createElement("a");
@@ -137,7 +143,7 @@ export default {
             "data:application/octet-stream," + encodeURIComponent(content); // only this mime type is supported
         }
       };
-      // download(csvData, "keywords.csv", "text/csv;encoding:utf-8");
+      download(csvData, "keywords.csv", "text/csv;encoding:utf-8");
     }
   }
 };
@@ -161,6 +167,7 @@ export default {
 
 .social-sharing {
   display: flex;
+  justify-content: center;
   height: 60px;
 }
 
@@ -195,6 +202,12 @@ export default {
 }
 
 .keyword {
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    font-size: 17px;
+  }
   &-item {
     display: flex;
     justify-content: space-between;

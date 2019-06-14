@@ -2,6 +2,9 @@ const express = require('express');
 const compression = require('compression');
 const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
+const { Parser } = require('json2csv');
+
+require('dotenv').config()
 
 const bodyParser = require('body-parser');
 
@@ -40,23 +43,16 @@ function restoreSession(page) {
   });
 }
 
-
 (async () => {
   const port = process.env.PORT || 3000;
 
-  const loginEmail = 'cadebul@marketlink.info';
-  const loginPassword = 'smajdovamanka123';
-  const advertiserId = '549759196505';
+  const loginEmail = process.env.PINTEREST_EMAIL;
+  const loginPassword = process.env.PINTEREST_PASSWORD;
+  const advertiserId = process.env.PINTEREST_ADVERTISER_ID;
 
-  // const loginEmail = 'yulepic@hostguru.top';
-  // const loginPassword = 'Lc:he;J9[/s89upL';
-  // const advertiserId = '549759192251';
-
-  // const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   const page = await browser.newPage();
   await restoreSession(page);
-
 
   await page.goto('https://ads.pinterest.com');
 
@@ -86,13 +82,13 @@ function restoreSession(page) {
     const { keyword } = req.params;
 
 
-    const data = await page.evaluate(async (keyword) => {
-      const data = await fetch(`https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?country=US&month=6&keywords=${keyword}&advertiser=549759196505`, {
+    const data = await page.evaluate(async (keyword, advertiserId) => {
+      const data = await fetch(`https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?country=US&month=6&keywords=${keyword}&advertiser=${advertiserId}`, {
         credentials: 'include', headers: { accept: 'application/json, text/plain, */*', 'sec-fetch-mode': 'cors' }, referrer: 'https://ads.pinterest.com/', referrerPolicy: 'origin', body: null, method: 'GET', mode: 'cors',
       });
       const parsedData = await data.json();
       return JSON.stringify(parsedData.data);
-    }, keyword);
+    }, keyword, advertiserId);
     res.json(JSON.parse(data));
   });
 
