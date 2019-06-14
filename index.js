@@ -2,20 +2,17 @@ const express = require('express');
 const compression = require('compression');
 const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
-const { Parser } = require('json2csv');
+const bodyParser = require('body-parser');
+const request = require('request-promise-native');
+const helmet = require('helmet');
 
 require('dotenv').config()
 
-const bodyParser = require('body-parser');
-
-const request = require('request-promise-native');
-
-
-// const processKeywordResearch = require('./getKeywordData');
 
 const app = express();
 
 app.use(compression());
+app.use(helmet());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -92,5 +89,5 @@ function restoreSession(page) {
     res.json(JSON.parse(data));
   });
 
-  app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+  app.listen(port, () => console.log(`Pinterest keyword tool listening on port ${port}!`));
 })();
