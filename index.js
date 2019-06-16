@@ -8,6 +8,8 @@ const helmet = require('helmet');
 
 require('dotenv').config()
 
+const getKeywordData = require('./getKeywordData');
+
 
 const app = express();
 
