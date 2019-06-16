@@ -39,7 +39,7 @@
           v-model="keywordInput"
         ></v-text-field>
         <v-select
-          @change="clearData"
+          @change="clearKeywordData"
           class="language-selector"
           append-icon="language"
           v-model="selectedVersion"
@@ -63,7 +63,10 @@
         v-if="keywordData"
         color="success"
         type="submit"
-      >Download as CSV</v-btn>
+      >
+        <v-icon>home</v-icon>
+        Download as CSV
+      </v-btn>
       <ul v-if="keywordData" class="keyword-list">
         <header class="keyword-header">
           <p>Keyword</p>
@@ -81,6 +84,9 @@
           </li>
         </template>
       </ul>
+      <template v-if="emptyResponse.isEmpty">
+        <h3>Sorry, we received no suggestions for "{{emptyResponse.searchedKeyword}}"</h3>
+      </template>
     </v-app>
   </main>
 </template>
@@ -88,7 +94,7 @@
 <script>
 import "babel-polyfill";
 
-const { parse } = require("json2csv");
+const { parse: json2csv } = require("json2csv");
 
 const flattenObject = obj =>
   Object.keys(obj).reduce((acc, k) => {
@@ -104,10 +110,14 @@ export default {
     keywordData: null,
     keywordInput: "",
     isLoading: false,
+    emptyResponse: {
+      isEmpty: false,
+      searchedKeyword: null
+    },
     selectedVersion: 1,
     countryVersions: [
       { name: "English (Advanced)", id: 1 },
-      { name: "Global (Simple)", id: 2 }
+      { name: "Global", id: 2 }
     ]
   }),
   computed: {
@@ -116,8 +126,10 @@ export default {
     }
   },
   methods: {
-    clearData() {
+    clearKeywordData() {
       this.keywordData = null;
+      this.emptyResponse.isEmpty = false;
+      this.emptyResponse.searchedKeyword = null;
     },
     async useOldKeywordAPI() {
       const { keywordInput } = this;
@@ -134,7 +146,15 @@ export default {
       this.isLoading = false;
     },
     async getKeywords() {
-      const { keywordInput, selectedVersion, useOldKeywordAPI } = this;
+      const {
+        keywordInput,
+        selectedVersion,
+        useOldKeywordAPI,
+        clearKeywordData,
+        handleEmptyResponse
+      } = this;
+
+      clearKeywordData();
 
       if (selectedVersion == 2) {
         // Using different API endpoint on Global version
@@ -150,18 +170,35 @@ export default {
         }
       });
       const parsedResponse = await response.json();
+
+      if (parsedResponse === null) {
+        handleEmptyResponse();
+        return;
+      }
+
       const flattenedData = parsedResponse.flat();
       const flattenedObjectData = flattenedData.map(flattenObject);
       this.keywordData = flattenedObjectData;
       this.isLoading = false;
+      this.emptyResponse.isEmpty = false;
+    },
+    handleEmptyResponse() {
+      const { keywordInput } = this;
+      this.isLoading = false;
+      this.emptyResponse.isEmpty = true;
+      this.emptyResponse.searchedKeyword = keywordInput;
     },
     downloadCSV() {
-      let { keywordData } = this;
+      let { keywordData, selectedVersion } = this;
 
-      const flattenedData = keywordData.map(flattenObject);
+      let csvData = undefined;
 
-      const csvData = parse(flattenedData);
-      console.log(csvData);
+      if (selectedVersion === 1) {
+        keywordData = keywordData.map(flattenObject);
+        csvData = json2csv(keywordData);
+      } else if (selectedVersion === 2) {
+        csvData = keywordData.join("\n");
+      }
 
       var download = function(content, fileName, mimeType) {
         var a = document.createElement("a");
