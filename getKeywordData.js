@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-function processKeywordResearch(keyword, maxLevels) {
+function processKeywordResearch(keyword, maxLevels = 3) {
   return new Promise(async (resolve, reject) => {
     const allLevelKeywords = [];
 

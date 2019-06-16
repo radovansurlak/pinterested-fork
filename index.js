@@ -6,10 +6,9 @@ const bodyParser = require('body-parser');
 const request = require('request-promise-native');
 const helmet = require('helmet');
 
-require('dotenv').config()
+require('dotenv').config();
 
 const getKeywordData = require('./getKeywordData');
-
 
 const app = express();
 
@@ -76,6 +75,14 @@ function restoreSession(page) {
   //     }
   //     console.log('Session has been successfully saved');
   //   });
+
+  app.get('/analyse-global/:keyword', async (req, res) => {
+    const { keyword } = req.params;
+
+    const keywordData = await getKeywordData(keyword);
+    const flattenedKeywordData = keywordData.flat();
+    res.json(flattenedKeywordData);
+  });
 
   app.get('/analyse/:keyword', async (req, res) => {
     const { keyword } = req.params;

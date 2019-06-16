@@ -1,5 +1,5 @@
 <template>
-  <v-app id="application-wrapper">
+  <main class="application-main">
     <social-sharing
       url="https://pinterested-prototype.herokuapp.com"
       title="Awesome Pinterest Keyword Research tool"
@@ -30,46 +30,65 @@
         </network>
       </section>
     </social-sharing>
-    <v-form class="keyword-form">
-      <v-text-field
-        class="keyword-input"
-        label="Keyword"
-        placeholder="Type in your Pinterest keyword"
-        v-model="keywordInput"
-      ></v-text-field>
+    <v-app id="form-wrapper">
+      <v-form class="keyword-form">
+        <v-text-field
+          class="keyword-input"
+          label="Keyword"
+          placeholder="Type in your Pinterest keyword"
+          v-model="keywordInput"
+        ></v-text-field>
+        <v-select
+          @change="clearData"
+          class="language-selector"
+          append-icon="language"
+          v-model="selectedVersion"
+          item-text="name"
+          item-value="id"
+          :items="countryVersions"
+          label="Language"
+        ></v-select>
+        <v-btn
+          class="search-button"
+          @click.prevent="getKeywords"
+          :loading="isLoading"
+          color="success"
+          type="submit"
+          :disabled="keywordInputIsEmpty"
+        >Get Keywords</v-btn>
+      </v-form>
       <v-btn
-        class="search-button"
-        @click.prevent="getKeywords"
-        :loading="isLoading"
+        class="download-button"
+        @click="downloadCSV"
+        v-if="keywordData"
         color="success"
         type="submit"
-        :disabled="keywordInputIsEmpty"
-      >Get Keywords</v-btn>
-    </v-form>
-    <v-btn
-      class="download-button"
-      @click="downloadCSV"
-      v-if="keywordData"
-      color="success"
-      type="submit"
-    >Download as CSV</v-btn>
-    <ul v-if="keywordData" class="keyword-list">
-      <header class="keyword-header">
-        <p>Keyword</p>
-        <p>Search Volume</p>
-      </header>
-      <li class="keyword-item" v-for="(keywordData, index) in keywordData" :key="index">
-        <span class="keyword-title">{{keywordData.keyword}}</span>
-        <span class="keyword-volume">{{keywordData.KEYWORD_QUERY_VOLUME}}</span>
-      </li>
-    </ul>
-  </v-app>
+      >Download as CSV</v-btn>
+      <ul v-if="keywordData" class="keyword-list">
+        <header class="keyword-header">
+          <p>Keyword</p>
+          <p v-if="selectedVersion === 1">Search Volume</p>
+        </header>
+        <template v-if="selectedVersion === 1">
+          <li class="keyword-item" v-for="(keywordData, index) in keywordData" :key="index">
+            <span class="keyword-title">{{keywordData.keyword}}</span>
+            <span class="keyword-volume">{{keywordData.KEYWORD_QUERY_VOLUME}}</span>
+          </li>
+        </template>
+        <template v-else-if="selectedVersion === 2">
+          <li class="keyword-item" v-for="(keyword, index) in keywordData" :key="index">
+            <span class="keyword-title">{{keyword}}</span>
+          </li>
+        </template>
+      </ul>
+    </v-app>
+  </main>
 </template>
 
 <script>
-const { parse } = require("json2csv");
-
 import "babel-polyfill";
+
+const { parse } = require("json2csv");
 
 const flattenObject = obj =>
   Object.keys(obj).reduce((acc, k) => {
@@ -84,7 +103,12 @@ export default {
   data: () => ({
     keywordData: null,
     keywordInput: "",
-    isLoading: false
+    isLoading: false,
+    selectedVersion: 1,
+    countryVersions: [
+      { name: "English (Advanced)", id: 1 },
+      { name: "Global (Simple)", id: 2 }
+    ]
   }),
   computed: {
     keywordInputIsEmpty() {
@@ -92,8 +116,32 @@ export default {
     }
   },
   methods: {
-    async getKeywords() {
+    clearData() {
+      this.keywordData = null;
+    },
+    async useOldKeywordAPI() {
       const { keywordInput } = this;
+      this.isLoading = true;
+
+      const response = await fetch(`/analyse-global/${keywordInput}`, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const parsedResponse = await response.json();
+      const flattenedData = parsedResponse.flat();
+      this.keywordData = flattenedData;
+      this.isLoading = false;
+    },
+    async getKeywords() {
+      const { keywordInput, selectedVersion, useOldKeywordAPI } = this;
+
+      if (selectedVersion == 2) {
+        // Using different API endpoint on Global version
+        useOldKeywordAPI();
+        return;
+      }
+
       this.isLoading = true;
 
       const response = await fetch(`/analyse/${keywordInput}`, {
@@ -150,29 +198,41 @@ export default {
 </script>
 
 <style lang="scss">
-#application-wrapper {
-  border-radius: 5px;
-  margin-top: 50px;
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
+.application-main {
   width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#form-wrapper {
+  border-radius: 5px;
+  margin-top: 100px;
+  margin-bottom: 20px;
   padding: 20px;
   font-family: Lato;
   max-width: 900px;
+  text-align: center;
   & .application--wrap {
     min-height: auto;
   }
 }
 
 .social-sharing {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
-  height: 60px;
+  padding: 10px;
+  background-color: rgb(250, 250, 250);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .social-icon {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50px;
   height: 50px;
   font-size: 40px;
@@ -185,6 +245,10 @@ export default {
 
 .social-network {
   outline: none;
+}
+
+.language-selector {
+  max-width: 190px;
 }
 
 .keyword-form {
@@ -230,6 +294,7 @@ export default {
 
 .keyword-input {
   margin-right: 10px;
+  min-width: 320px;
 }
 </style>
 
