@@ -1,7 +1,7 @@
 <template>
   <main class="application-main">
     <social-sharing
-      url="https://pinterested-prototype.herokuapp.com"
+      :url="shareURL"
       title="Awesome Pinterest Keyword Research tool"
       description="Keyword research tool that helps you find the best keyword ideas for Pinterest."
       quote="Keyword research tool that helps you find the best keyword ideas for Pinterest."
@@ -30,6 +30,8 @@
         </network>
       </section>
     </social-sharing>
+    <h1 class="app-headline">Pinterested</h1>
+    <h2 class="app-subheadline">The ultimate Pinterest keyword research tool</h2>
     <v-app id="form-wrapper">
       <v-form class="keyword-form">
         <v-text-field
@@ -37,6 +39,8 @@
           label="Keyword"
           placeholder="Type in your Pinterest keyword"
           v-model="keywordInput"
+          append-icon="vpn_key"
+          autofocus
         ></v-text-field>
         <v-select
           @change="clearKeywordData"
@@ -55,7 +59,7 @@
           color="success"
           type="submit"
           :disabled="keywordInputIsEmpty"
-        >Get Keywords</v-btn>
+        >Get Keywords
       </v-form>
       <v-btn
         class="download-button"
@@ -64,7 +68,6 @@
         color="success"
         type="submit"
       >
-        <v-icon>home</v-icon>
         Download as CSV
       </v-btn>
       <ul v-if="keywordData" class="keyword-list">
@@ -107,6 +110,7 @@ const flattenObject = obj =>
 export default {
   name: "App",
   data: () => ({
+    shareURL: window.location.origin,
     keywordData: null,
     keywordInput: "",
     isLoading: false,
@@ -243,12 +247,33 @@ export default {
   align-items: center;
 }
 
+.app-headline {
+  margin-top: 120px;
+  font-family: Montserrat;
+  font-size: calc(40px + 1.5vw);
+  color: white;
+  font-weight: 800;
+  text-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+}
+
+.app-subheadline {
+  margin-top: 20px;
+  font-family: Montserrat;
+  font-size: 30px;
+  color: #7768B8;
+  font-weight: 400  ;
+  text-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+}
+
 #form-wrapper {
+  box-shadow: 0px 5px 25px rgba(0,0,0,0.3);
   border-radius: 5px;
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 20px;
   padding: 20px;
-  font-family: Lato;
+  font-weight: 500;
+  font-family: Montserrat;
+  width: 92%;
   max-width: 900px;
   text-align: center;
   & .application--wrap {
@@ -257,26 +282,31 @@ export default {
 }
 
 .social-sharing {
+  position: fixed;
+  z-index: 1;
   display: inline-flex;
   justify-content: center;
   padding: 10px;
-  background-color: rgb(250, 250, 250);
+  background: #E0EAFC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #CFDEF3, #E0EAFC);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #CFDEF3, #E0EAFC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .social-icon {
+  $icon-size: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
-  font-size: 40px;
+  width: $icon-size;
+  height: $icon-size;
+  font-size: calc(#{$icon-size} - 10px);
   cursor: pointer;
   transition: all 250ms;
   &:hover {
-    font-size: 50px;
+    font-size: calc(#{$icon-size} + 10px);
   }
 }
 
@@ -285,7 +315,8 @@ export default {
 }
 
 .language-selector {
-  max-width: 190px;
+  max-width: 200px;
+  white-space: nowrap;
 }
 
 .keyword-form {
@@ -329,9 +360,9 @@ export default {
   }
 }
 
-.keyword-input {
-  margin-right: 10px;
-  min-width: 320px;
+.v-input.keyword-input {
+  margin-right: 20px;
+  flex-basis: 260px;
 }
 </style>
 
