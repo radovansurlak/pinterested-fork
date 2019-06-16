@@ -249,7 +249,7 @@ export default {
 
 .app-headline {
   margin-top: 120px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-size: calc(40px + 1.5vw);
   color: white;
   font-weight: 800;
@@ -258,7 +258,7 @@ export default {
 
 .app-subheadline {
   margin-top: 20px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-size: 30px;
   color: #7768B8;
   font-weight: 400  ;
@@ -287,9 +287,7 @@ export default {
   display: inline-flex;
   justify-content: center;
   padding: 10px;
-  background: #E0EAFC;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, #CFDEF3, #E0EAFC);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #CFDEF3, #E0EAFC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: rgba(255,255,255,0.5);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
