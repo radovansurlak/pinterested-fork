@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-function processKeywordResearch(keyword, maxLevels = 3) {
+function processKeywordResearch(keyword, maxLevels = 2) {
   return new Promise(async (resolve, reject) => {
     const allLevelKeywords = [];
 
@@ -88,12 +88,12 @@ function processKeywordResearch(keyword, maxLevels = 3) {
     }
 
     async function getAllKeywordStrings(keyword) {
-      const count = 20;
-
       const sanitizedKeyword = removeSpecials(convertAccentedCharacters(keyword));
 
+      const requestURL = `https://www.pinterest.de/resource/BaseSearchResource/get/?source_url=/search/pins/?q=${sanitizedKeyword}&rs=typed&term_meta[]=${sanitizedKeyword}|typed&data={"options":{"query":"${sanitizedKeyword}","scope":"pins"},"context":{}}&_=${Date.now()}`;
 
-      const requestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
+
+      // const requestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
 
       let response;
 
@@ -101,7 +101,7 @@ function processKeywordResearch(keyword, maxLevels = 3) {
         response = await axios(encodeURI(requestURL), {
           credentials: 'include',
           headers: {
-            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'de,sen-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
+            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'dk-DK,de,sk-SK,en-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
           },
           referrer: 'https://www.pinterest.co.uk/',
           referrerPolicy: 'origin',
@@ -110,18 +110,17 @@ function processKeywordResearch(keyword, maxLevels = 3) {
           mode: 'cors',
         });
       } catch (error) {
-        console.log(error);
+        console.log({ keyword, requestURL, error });
+        return null;
       }
-      const keywordItems = response.data.resource_response.data.items;
-      const filteredKeywords = keywordItems.filter(keywordItem => keywordItem.type === 'query');
-      const keywordStrings = filteredKeywords.map(keywordItem => keywordItem.label);
-
-      const filteredKeywordStrings = keywordStrings.filter(keywordString => keywordString !== keyword);
-
-      return filteredKeywordStrings;
+      const keywordItems = response.data.resource_response.data.guides;
+      if (keywordItems === null) return null;
+      // add the root keyword to each of the words
+      const keywordStrings = keywordItems.map(keywordItem => `${keyword} ${keywordItem.term}`);
+      return keywordStrings;
     }
 
-    async function getAllPinterestKeywords(keyword, level = 1, maxLevels = 3) {
+    async function getAllPinterestKeywords(keyword, level = 1, maxLevels) {
       return new Promise(async (resolve, reject) => {
         if (level > maxLevels) {
           resolve(`Max level reached - ${maxLevels}`);
@@ -131,9 +130,11 @@ function processKeywordResearch(keyword, maxLevels = 3) {
 
         const allKeywordStrings = await getAllKeywordStrings(keyword);
 
-        allLevelKeywords.push(allKeywordStrings);
+        if (allKeywordStrings !== null) {
+          allLevelKeywords.push(allKeywordStrings);
+          await processArray(allKeywordStrings, getAllPinterestKeywords, level + 1, maxLevels);
+        }
 
-        await processArray(allKeywordStrings, getAllPinterestKeywords, level + 1, maxLevels);
 
         resolve(allLevelKeywords);
       });

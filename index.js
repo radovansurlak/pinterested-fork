@@ -48,11 +48,11 @@ function restoreSession(page) {
   const loginPassword = process.env.PINTEREST_PASSWORD;
   const advertiserId = process.env.PINTEREST_ADVERTISER_ID;
 
-  const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-  const page = await browser.newPage();
-  await restoreSession(page);
+  // const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+  // const page = await browser.newPage();
+  // await restoreSession(page);
 
-  await page.goto('https://ads.pinterest.com');
+  // await page.goto('https://ads.pinterest.com');
 
   // await Promise.all([
   //   page.click('[data-test-id="unauthheader-loginbutton"]'),
