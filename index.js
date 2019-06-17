@@ -52,7 +52,7 @@ function restoreSession(page) {
   const page = await browser.newPage();
   await restoreSession(page);
 
-  // await page.goto('https://ads.pinterest.com');
+  await page.goto('https://ads.pinterest.com');
 
   // await Promise.all([
   //   page.click('[data-test-id="unauthheader-loginbutton"]'),
