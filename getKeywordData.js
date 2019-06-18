@@ -34,7 +34,11 @@ function fetchPinterestAPIResource(requestURL) {
         resolve(data);
       });
     } catch (error) {
-      reject(error);
+      console.log({
+        error,
+        requestURL,
+      });
+      resolve(false);
     }
   });
 }
@@ -140,13 +144,14 @@ function processKeywordResearch(keyword, maxLevels = 2) {
 
       const advancedTypeaheadRequestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
 
+
       const baseSearchPromise = fetchPinterestAPIResource(baseSearchRequestURL);
       const advancedTypeaheadPromise = fetchPinterestAPIResource(advancedTypeaheadRequestURL);
 
       const [baseSearchResponse, advancedTypeaheadResponse] = await Promise.all([baseSearchPromise, advancedTypeaheadPromise]);
 
-      const baseSearchKeywords = processBaseSearchResponse(baseSearchResponse, keyword);
-      const advancedTypeaheadKeywords = processAdvancedTypeaheadResponse(advancedTypeaheadResponse);
+      const baseSearchKeywords = baseSearchResponse === false ? [] : processBaseSearchResponse(baseSearchResponse, keyword);
+      const advancedTypeaheadKeywords = advancedTypeaheadResponse === false ? [] : processAdvancedTypeaheadResponse(advancedTypeaheadResponse);
 
 
       const keywordStrings = [].concat(...[baseSearchKeywords, advancedTypeaheadKeywords].filter(keywordArray => keywordArray !== null));
@@ -169,7 +174,6 @@ function processKeywordResearch(keyword, maxLevels = 2) {
           allLevelKeywords = new Set([...allLevelKeywords, ...allKeywordStrings]);
           await processArray(allKeywordStrings, getAllPinterestKeywords, level + 1, maxLevels);
         }
-
 
         resolve(allLevelKeywords);
       });
