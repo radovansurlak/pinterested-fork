@@ -31,7 +31,7 @@
       </section>
     </social-sharing>
     <h1 class="app-headline">Pinterested</h1>
-    <h2 class="app-subheadline">The ultimate Pinterest keyword research tool</h2>
+    <h2 class="app-subheadline">The ultimate Pinterest Keyword Research Tool</h2>
     <v-app id="form-wrapper">
       <v-form class="keyword-form">
         <v-text-field
@@ -251,18 +251,18 @@ export default {
   margin-top: 120px;
   font-family: Montserrat, sans-serif;
   font-size: calc(40px + 1.5vw);
-  color: white;
+  color: #2f2f2f;
   font-weight: 800;
-  text-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+  text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
 }
 
 .app-subheadline {
   margin-top: 20px;
   font-family: Montserrat, sans-serif;
   font-size: 30px;
-  color: #7768B8;
+  color: #2f2f2f;
   font-weight: 400  ;
-  text-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+  text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
 }
 
 #form-wrapper {
@@ -287,15 +287,15 @@ export default {
   display: inline-flex;
   justify-content: center;
   padding: 10px;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,1);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .social-icon {
   $icon-size: 40px;
   display: flex;
+  margin: 0 6px;
   justify-content: center;
   align-items: center;
   width: $icon-size;
