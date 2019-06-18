@@ -80,7 +80,7 @@ function restoreSession(page) {
     const { keyword } = req.params;
 
     const keywordData = await getKeywordData(keyword);
-    const flattenedKeywordData = keywordData.flat();
+    const flattenedKeywordData = Array.from(keywordData);
     res.json(flattenedKeywordData);
   });
 

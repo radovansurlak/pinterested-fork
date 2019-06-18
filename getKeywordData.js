@@ -1,8 +1,48 @@
 const axios = require('axios');
 
+function processAdvancedTypeaheadResponse(advancedTypeaheadResponse) {
+  const keywordItems = advancedTypeaheadResponse.data.resource_response.data.items;
+  const filteredKeywords = keywordItems.filter(keywordItem => keywordItem.type === 'query');
+  const keywordStrings = filteredKeywords.map(keywordItem => keywordItem.label);
+  return keywordStrings;
+}
+function processBaseSearchResponse(baseSearchResponse, baseKeyword) {
+  const keywordItems = baseSearchResponse.data.resource_response.data.guides;
+  if (keywordItems === null) return null;
+  // add the root keyword to each of the words
+  const keywordStrings = keywordItems.map(keywordItem => `${baseKeyword} ${keywordItem.term}`);
+  return keywordStrings;
+}
+
+
+// const filteredKeywordStrings = keywordStrings.filter(keywordString => keywordString !== keyword);
+
+function fetchPinterestAPIResource(requestURL) {
+  return new Promise((resolve, reject) => {
+    try {
+      axios(encodeURI(requestURL), {
+        credentials: 'include',
+        headers: {
+          accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'de,en-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
+        },
+        referrer: 'https://www.pinterest.co.uk/',
+        referrerPolicy: 'origin',
+        body: null,
+        method: 'GET',
+        modea: 'cors',
+      }).then((data) => {
+        resolve(data);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 function processKeywordResearch(keyword, maxLevels = 2) {
   return new Promise(async (resolve, reject) => {
-    const allLevelKeywords = [];
+    let allLevelKeywords = new Set();
+    const searchedKeywords = new Set();
 
     function processArray(array, func, level, maxLevels) {
       return new Promise(async (resolve, reject) => {
@@ -90,33 +130,29 @@ function processKeywordResearch(keyword, maxLevels = 2) {
     async function getAllKeywordStrings(keyword) {
       const sanitizedKeyword = removeSpecials(convertAccentedCharacters(keyword));
 
-      const requestURL = `https://www.pinterest.de/resource/BaseSearchResource/get/?source_url=/search/pins/?q=${sanitizedKeyword}&rs=typed&term_meta[]=${sanitizedKeyword}|typed&data={"options":{"query":"${sanitizedKeyword}","scope":"pins"},"context":{}}&_=${Date.now()}`;
-
-
-      // const requestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
-
-      let response;
-
-      try {
-        response = await axios(encodeURI(requestURL), {
-          credentials: 'include',
-          headers: {
-            accept: 'application/json, text/javascript, */*, q=0.01', 'accept-language': 'dk-DK,de,sk-SK,en-US;q=0.8,en;q=0.7', 'cache-control': 'no-cache', pragma: 'no-cache', 'x-app-version': '69ec505', 'x-pinterest-appstate': 'active', 'x-requested-with': 'XMLHttpRequest',
-          },
-          referrer: 'https://www.pinterest.co.uk/',
-          referrerPolicy: 'origin',
-          body: null,
-          method: 'GET',
-          mode: 'cors',
-        });
-      } catch (error) {
-        console.log({ keyword, requestURL, error });
+      // Skip the search if keyword was already searched for
+      if (searchedKeywords.has(keyword) || searchedKeywords.has(sanitizedKeyword)) {
         return null;
       }
-      const keywordItems = response.data.resource_response.data.guides;
-      if (keywordItems === null) return null;
-      // add the root keyword to each of the words
-      const keywordStrings = keywordItems.map(keywordItem => `${keyword} ${keywordItem.term}`);
+
+
+      const baseSearchRequestURL = `https://www.pinterest.de/resource/BaseSearchResource/get/?source_url=/search/pins/?q=${sanitizedKeyword}&rs=typed&term_meta[]=${sanitizedKeyword}|typed&data={"options":{"query":"${sanitizedKeyword}","scope":"pins"},"context":{}}&_=${Date.now()}`;
+
+      const advancedTypeaheadRequestURL = `https://www.pinterest.de/_ngjs/resource/AdvancedTypeaheadResource/get/?source_url=/&data={"options":{"count":5,"pin_scope":"pins","term":"${sanitizedKeyword}"}}&_=${Date.now()}"`;
+
+      const baseSearchPromise = fetchPinterestAPIResource(baseSearchRequestURL);
+      const advancedTypeaheadPromise = fetchPinterestAPIResource(advancedTypeaheadRequestURL);
+
+      const [baseSearchResponse, advancedTypeaheadResponse] = await Promise.all([baseSearchPromise, advancedTypeaheadPromise]);
+
+      const baseSearchKeywords = processBaseSearchResponse(baseSearchResponse, keyword);
+      const advancedTypeaheadKeywords = processAdvancedTypeaheadResponse(advancedTypeaheadResponse);
+
+
+      const keywordStrings = [].concat(...[baseSearchKeywords, advancedTypeaheadKeywords].filter(keywordArray => keywordArray !== null));
+
+      searchedKeywords.add(keyword);
+
       return keywordStrings;
     }
 
@@ -126,12 +162,11 @@ function processKeywordResearch(keyword, maxLevels = 2) {
           resolve(`Max level reached - ${maxLevels}`);
           return;
         }
-        // remove the original keyword from the array
 
         const allKeywordStrings = await getAllKeywordStrings(keyword);
 
         if (allKeywordStrings !== null) {
-          allLevelKeywords.push(allKeywordStrings);
+          allLevelKeywords = new Set([...allLevelKeywords, ...allKeywordStrings]);
           await processArray(allKeywordStrings, getAllPinterestKeywords, level + 1, maxLevels);
         }
 
