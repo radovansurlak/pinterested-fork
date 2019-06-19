@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const { redirectToHTTPS } = require('express-http-to-https');
+const enforce = require('express-sslify');
 
 require('dotenv').config();
 
@@ -14,7 +14,7 @@ const app = express();
 
 app.use(compression());
 app.use(helmet());
-app.use(redirectToHTTPS());
+app.use(enforce.HTTPS({ trustProtoHeader: true }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
