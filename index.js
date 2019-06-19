@@ -4,20 +4,22 @@ const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const enforce = require('express-sslify');
+const sslRedirect = require('heroku-ssl-redirect');
 
 require('dotenv').config();
 
-const getKeywordData = require('./getKeywordData');
-
 const app = express();
+
+const getKeywordData = require('./getKeywordData');
 
 app.use(compression());
 app.use(helmet());
-app.use(enforce.HTTPS({ trustProtoHeader: true }));
+app.use(sslRedirect());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(express.static('dist'));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -25,12 +27,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static('dist'));
-
 function restoreSession(page) {
   return new Promise(async (resolve, reject) => {
     const cookies = jsonfile.readFileSync('./cookies.json');
-
     if (cookies) {
       if (cookies.length !== 0) {
         for (const cookie of cookies) {
@@ -65,7 +64,6 @@ function restoreSession(page) {
   //   page.click('.red.SignupButton.active'),
   //   page.waitForNavigation({ waitUntil: 'networkidle0' }),
   // ]);
-
 
   // const cookiesObject = await page.cookies();
   // // Write cookies to temp file to be used in other profile pages

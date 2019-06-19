@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-sslify": "^1.2.0",
     "helmet": "^3.18.0",
+    "heroku-ssl-redirect": "^0.0.4",
     "json2csv": "^4.5.1",
     "jsonfile": "^5.0.0",
     "parcel": "^1.12.3",
