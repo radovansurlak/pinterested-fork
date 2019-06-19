@@ -3,8 +3,8 @@ const compression = require('compression');
 const puppeteer = require('puppeteer');
 const jsonfile = require('jsonfile');
 const bodyParser = require('body-parser');
-const request = require('request-promise-native');
 const helmet = require('helmet');
+const { redirectToHTTPS } = require('express-http-to-https');
 
 require('dotenv').config();
 
@@ -14,6 +14,7 @@ const app = express();
 
 app.use(compression());
 app.use(helmet());
+app.use(redirectToHTTPS());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -21,13 +22,6 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  if (req.secure) {
-    // request was via https, so do no special handling
-    next();
-  } else {
-    // request was via http, so redirect to https
-    res.redirect(`https://${req.headers.host}${req.url}`);
-  }
 });
 
 app.use(express.static('dist'));
