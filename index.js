@@ -37,6 +37,8 @@ function restoreSession(page) {
         }
         resolve('Session has been loaded in the browser');
       }
+    } else {
+      reject(new Error('No cookies.json file was found'));
     }
   });
 }

@@ -25,6 +25,7 @@
     "jsonfile": "^5.0.0",
     "parcel": "^1.12.3",
     "pm2": "^3.5.1",
+    "posthtml-expressions": "^1.1.1",
     "puppeteer": "^1.17.0",
     "request-promise-native": "^1.0.7",
     "vue": "^2.6.10",
