@@ -101,7 +101,6 @@ app.use((req, res, next) => {
       }
       return 0;
     });
-
     res.json(dataSortedBySearchVolume);
   });
 
