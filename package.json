@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ttab nodemon index.js && parcel ./client/index.html --out-dir ./dist",
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "build": "npm install && parcel build ./client/index.html --out-dir dist --no-source-maps"
+    "build": "npm install && gulp uglifyNodeJS && parcel build ./client/index.html --out-dir dist --no-source-maps"
   },
   "engines": {
     "node": "12.x"
