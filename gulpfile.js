@@ -6,5 +6,3 @@ gulp.task('uglifyNodeJS', () => {
     .pipe(uglify())
     .pipe(gulp.dest('./test'));
 });
-
-gulp.task('default', ['uglifyNodeJS']);
