@@ -6,9 +6,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="style.css">
+  <!-- Inlined styles instead of separat style file -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="preload" href='https://fonts.googleapis.com/css?family=Material+Icons|Montserrat:400,500,600,800'
+    as="style">
   <link href='https://fonts.googleapis.com/css?family=Material+Icons|Montserrat:400,500,600,800' rel="stylesheet">
 </head>
 <script>
@@ -25,6 +28,67 @@
 
 
 <style>
+  @font-face {
+    font-family: 'icomoon';
+    src: url('assets/fonts/icomoon.eot?b9jkyn');
+    src: url('assets/fonts/icomoon.eot?b9jkyn#iefix') format('embedded-opentype'),
+      url('assets/fonts/icomoon.ttf?b9jkyn') format('truetype'),
+      url('assets/fonts/icomoon.woff?b9jkyn') format('woff'),
+      url('assets/fonts/icomoon.svg?b9jkyn#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  [class^="icon-"],
+  [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .icon-whatsapp:before {
+    content: "\e900";
+    color: #25D366;
+  }
+
+  .icon-twitter:before {
+    content: "\e901";
+    color: #55acee;
+  }
+
+  .icon-reddit:before {
+    content: "\e902";
+    color: #ff5700;
+  }
+
+  .icon-linkedin:before {
+    content: "\e903";
+    color: #0077B5;
+  }
+
+  .icon-facebook:before {
+    content: "\e904";
+    color: #3b5999;
+  }
+
+  .icon-facebook-f:before {
+    content: "\e904";
+  }
+
+  .icon-pinterest-square:before {
+    content: "\e905";
+    color: #bd081c;
+  }
+
   html {
     font-family: Montserrat, sans-serif;
   }
@@ -32,6 +96,171 @@
   body {
     display: flex;
     justify-content: center;
+  }
+
+  .application-main {
+    padding: 0px 4px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-headline {
+    margin-top: 120px;
+    font-family: Montserrat, sans-serif;
+    font-size: calc(40px + 1.5vw);
+    color: #2f2f2f;
+    font-weight: 800;
+    text-shadow: 0px 5px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .app-subheadline {
+    margin-top: 20px;
+    font-family: Montserrat, sans-serif;
+    font-size: 30px;
+    color: #2f2f2f;
+    font-weight: 400;
+    text-shadow: 0px 5px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  #form-wrapper {
+    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-weight: 500;
+    font-family: Montserrat;
+    width: 92%;
+    max-width: 900px;
+    text-align: center;
+  }
+
+  #form-wrapper .application--wrap {
+    min-height: auto;
+  }
+
+  .social-sharing {
+    position: fixed;
+    z-index: 1;
+    display: inline-flex;
+    justify-content: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 1);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  .social-icon {
+    display: flex;
+    margin: 0 6px;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    font-size: calc(40px - 10px);
+    cursor: pointer;
+    transition: all 250ms;
+  }
+
+  .social-icon:hover {
+    font-size: calc(40px + 10px);
+  }
+
+  .social-network {
+    outline: none;
+  }
+
+  .v-input {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .v-input.language-selector {
+    flex-basis: 150px;
+    white-space: nowrap;
+  }
+
+  .v-input.keyword-input {
+    flex-basis: 260px;
+  }
+
+  .keyword-form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .v-btn.search-button,
+  .v-btn.download-button {
+    font-weight: 600;
+  }
+
+  .v-btn.search-button {
+    flex-basis: 80px;
+    flex-grow: 1;
+    min-width: 135px;
+  }
+
+  .v-btn.download-button {
+    margin-bottom: 20px;
+  }
+
+  .keyword-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    font-size: 17px;
+  }
+
+  .keyword-item {
+    display: block;
+    text-align: left;
+    list-style: none;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    border-radius: 10px;
+  }
+
+  .keyword-item-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+  }
+
+  .keyword-list {
+    padding-left: 0;
+  }
+
+  .keyword-title {
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .keyword-competition {
+    text-align: center;
+  }
+
+  .keyword-volume {
+    text-align: right;
+  }
+
+  .header-label-keyword {
+    text-align: left;
+  }
+
+  .header-label-search-volume {
+    text-align: right;
+  }
+
+  .no-response-message {
+    padding: 15px 0px;
   }
 </style>
 
@@ -46,12 +275,13 @@
 <script>
   (function (h, o, t, j, a, r) {
     h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
-    h._hjSettings = { hjid: {==HOTJAR_ID==}, hjsv: 5 };
-    a = o.getElementsByTagName('head')[0];
-    r = o.createElement('script'); r.async = 1;
-    r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-    a.appendChild(r);
-  })(window, document, '//static.hotjar.com/c/hotjar-', '.js?sv=');
+    h._hjSettings = { hjid: {== HOTJAR_ID ==}, hjsv: 5
+  };
+  a = o.getElementsByTagName('head')[0];
+  r = o.createElement('script'); r.async = 1;
+  r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+  a.appendChild(r);
+  }) (window, document, '//static.hotjar.com/c/hotjar-', '.js?sv=');
 </script>
 
 

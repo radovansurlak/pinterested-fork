@@ -243,167 +243,169 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.application-main {
-  padding: 0px 4px;
-  width: 100%;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+// Added complied css into index.html and commented the scss rules below
 
-.app-headline {
-  margin-top: 120px;
-  font-family: Montserrat, sans-serif;
-  font-size: calc(40px + 1.5vw);
-  color: #2f2f2f;
-  font-weight: 800;
-  text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
-}
+// <style lang="scss">
+// .application-main {
+//   padding: 0px 4px;
+//   width: 100%;
+//   text-align: center;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// }
 
-.app-subheadline {
-  margin-top: 20px;
-  font-family: Montserrat, sans-serif;
-  font-size: 30px;
-  color: #2f2f2f;
-  font-weight: 400  ;
-  text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
-}
+// .app-headline {
+//   margin-top: 120px;
+//   font-family: Montserrat, sans-serif;
+//   font-size: calc(40px + 1.5vw);
+//   color: #2f2f2f;
+//   font-weight: 800;
+//   text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
+// }
 
-#form-wrapper {
-  box-shadow: 0px 5px 25px rgba(0,0,0,0.3);
-  border-radius: 5px;
-  margin-top: 50px;
-  margin-bottom: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  font-weight: 500;
-  font-family: Montserrat;
-  width: 92%;
-  max-width: 900px;
-  text-align: center;
-  & .application--wrap {
-    min-height: auto;
-  }
-}
+// .app-subheadline {
+//   margin-top: 20px;
+//   font-family: Montserrat, sans-serif;
+//   font-size: 30px;
+//   color: #2f2f2f;
+//   font-weight: 400  ;
+//   text-shadow: 0px 5px 25px rgba(0,0,0,0.2);
+// }
 
-.social-sharing {
-  position: fixed;
-  z-index: 1;
-  display: inline-flex;
-  justify-content: center;
-  padding: 10px;
-  background: rgba(255,255,255,1);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
+// #form-wrapper {
+//   box-shadow: 0px 5px 25px rgba(0,0,0,0.3);
+//   border-radius: 5px;
+//   margin-top: 50px;
+//   margin-bottom: 20px;
+//   padding-left: 20px;
+//   padding-right: 20px;
+//   padding-top: 20px;
+//   padding-bottom: 10px;
+//   font-weight: 500;
+//   font-family: Montserrat;
+//   width: 92%;
+//   max-width: 900px;
+//   text-align: center;
+//   & .application--wrap {
+//     min-height: auto;
+//   }
+// }
 
-.social-icon {
-  $icon-size: 40px;
-  display: flex;
-  margin: 0 6px;
-  justify-content: center;
-  align-items: center;
-  width: $icon-size;
-  height: $icon-size;
-  font-size: calc(#{$icon-size} - 10px);
-  cursor: pointer;
-  transition: all 250ms;
-  &:hover {
-    font-size: calc(#{$icon-size} + 10px);
-  }
-}
+// .social-sharing {
+//   position: fixed;
+//   z-index: 1;
+//   display: inline-flex;
+//   justify-content: center;
+//   padding: 10px;
+//   background: rgba(255,255,255,1);
+//   border-bottom-left-radius: 10px;
+//   border-bottom-right-radius: 10px;
+// }
 
-.social-network {
-  outline: none;
-}
+// .social-icon {
+//   $icon-size: 40px;
+//   display: flex;
+//   margin: 0 6px;
+//   justify-content: center;
+//   align-items: center;
+//   width: $icon-size;
+//   height: $icon-size;
+//   font-size: calc(#{$icon-size} - 10px);
+//   cursor: pointer;
+//   transition: all 250ms;
+//   &:hover {
+//     font-size: calc(#{$icon-size} + 10px);
+//   }
+// }
 
-.v-input {
-  margin-left: 10px;
-  margin-right: 10px;
-  &.language-selector {
-    flex-basis: 150px;
-    white-space: nowrap;
-  } 
-  &.keyword-input {
-    flex-basis: 260px;
-  }
-}
+// .social-network {
+//   outline: none;
+// }
 
-
-.keyword-form {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.v-btn {
-  &.search-button,
-  &.download-button {
-    font-weight: 600;
-  }
-  &.search-button {
-    flex-basis: 80px;
-    flex-grow: 1;
-    min-width: 135px;
-  }
-  &.download-button {
-    margin-bottom: 20px;
-  }
-}
-
-.keyword {
-  &-header {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding: 10px;
-    font-size: 17px;
-  }
-  &-item {
-    &-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      align-items: center;
-    }
-    display: block;
-    text-align: left;
-    list-style: none;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
-
-    background-color: #fff;
-    border-radius: 10px;
-  }
-  &-list {
-    padding-left: 0;
-  }
-  &-title {
-    font-weight: 600;
-    text-align: left;
-  }
-  &-competition {
-    text-align: center;
-  }
-  &-volume {
-    text-align: right;
-  }
-}
+// .v-input {
+//   margin-left: 10px;
+//   margin-right: 10px;
+//   &.language-selector {
+//     flex-basis: 150px;
+//     white-space: nowrap;
+//   } 
+//   &.keyword-input {
+//     flex-basis: 260px;
+//   }
+// }
 
 
-.header-label {
-  &-keyword {
-    text-align: left;
-  }
-  &-search-volume {
-    text-align: right;
-  }
-}
-.no-response-message {
-  padding: 15px 0px;
-}
-</style>
+// .keyword-form {
+//   display: flex;
+//   flex-wrap: wrap;
+// }
+
+// .v-btn {
+//   &.search-button,
+//   &.download-button {
+//     font-weight: 600;
+//   }
+//   &.search-button {
+//     flex-basis: 80px;
+//     flex-grow: 1;
+//     min-width: 135px;
+//   }
+//   &.download-button {
+//     margin-bottom: 20px;
+//   }
+// }
+
+// .keyword {
+//   &-header {
+//     display: grid;
+//     grid-template-columns: repeat(3, 1fr);
+//     padding: 10px;
+//     font-size: 17px;
+//   }
+//   &-item {
+//     &-grid {
+//       display: grid;
+//       grid-template-columns: 1fr 1fr 1fr;
+//       align-items: center;
+//     }
+//     display: block;
+//     text-align: left;
+//     list-style: none;
+//     padding: 10px 15px;
+//     margin-bottom: 10px;
+//     box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.05);
+
+//     background-color: #fff;
+//     border-radius: 10px;
+//   }
+//   &-list {
+//     padding-left: 0;
+//   }
+//   &-title {
+//     font-weight: 600;
+//     text-align: left;
+//   }
+//   &-competition {
+//     text-align: center;
+//   }
+//   &-volume {
+//     text-align: right;
+//   }
+// }
+
+
+// .header-label {
+//   &-keyword {
+//     text-align: left;
+//   }
+//   &-search-volume {
+//     text-align: right;
+//   }
+// }
+// .no-response-message {
+//   padding: 15px 0px;
+// }
+// </style>
 
 

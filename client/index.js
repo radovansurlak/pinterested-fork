@@ -11,7 +11,8 @@ import Vuetify, {
 
 import App from './app/App.vue';
 
-import 'vuetify/dist/vuetify.min.css';
+// import 'vuetify/dist/vuetify.min.css';
+import './assets/css/vuetify-cherry-picked.css'
 
 Vue.use(SocialSharing);
 Vue.use(Vuetify, {
