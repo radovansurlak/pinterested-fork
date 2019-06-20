@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "ttab nodemon index.js && parcel ./client/index.html --out-dir ./dist",
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "build": "npm install && gulp uglifyNodeJS && parcel build ./client/index.html --out-dir dist --no-source-maps"
+    "build": "gulp uglifyNodeJS && parcel build ./client/index.html --out-dir dist --no-source-maps"
   },
   "engines": {
     "node": "12.x"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",

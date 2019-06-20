@@ -20,6 +20,7 @@ app.use(sslRedirect());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Serving static files - would be best delegated to Nginx
 app.use(express.static('dist'));
 
 app.use((req, res, next) => {
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+// Using Pinterest session in Puppeteer to access internal Pinterest API
 (async () => {
   const port = process.env.PORT || 3000;
 
@@ -41,6 +42,8 @@ app.use((req, res, next) => {
   await restorePinterestSession(page);
 
   await page.goto('https://ads.pinterest.com');
+
+  // Uncommented section with programmatical login into Pinterest
 
   // await Promise.all([
   //   page.click('[data-test-id="unauthheader-loginbutton"]'),
@@ -86,7 +89,7 @@ app.use((req, res, next) => {
       res.json(null);
       return;
     }
-
+    // Formatting the output data to include numerical search volume property
     const dataWithSortVolume = keywordData.map((keywordObject) => {
       keywordObject.sortVolume = formatVolumeForSort(keywordObject.metrics.KEYWORD_QUERY_VOLUME);
       return keywordObject;
@@ -103,6 +106,5 @@ app.use((req, res, next) => {
     });
     res.json(dataSortedBySearchVolume);
   });
-
   app.listen(port, () => console.log(`Pinterest keyword tool listening on port ${port}!`));
 })();

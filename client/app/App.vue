@@ -99,6 +99,7 @@
 </template>
 
 <script>
+// Importing polyfill for async-await pattern
 import "babel-polyfill";
 
 const { parse: json2csv } = require("json2csv");

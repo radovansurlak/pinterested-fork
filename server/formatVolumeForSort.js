@@ -1,5 +1,5 @@
 const numeral = require('numeral');
-
+// Formatting search volume from strings to numbers
 module.exports = function formatVolumeForSort(volume) {
   const splitNumbers = volume.split('-');
   const formattedNumbers = splitNumbers.map((number) => {

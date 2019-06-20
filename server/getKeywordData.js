@@ -14,9 +14,6 @@ function processBaseSearchResponse(baseSearchResponse, baseKeyword) {
   return keywordStrings;
 }
 
-
-// const filteredKeywordStrings = keywordStrings.filter(keywordString => keywordString !== keyword);
-
 function fetchPinterestAPIResource(requestURL) {
   return new Promise((resolve, reject) => {
     try {
@@ -153,7 +150,6 @@ function processKeywordResearch(keyword, maxLevels = 2) {
       const baseSearchKeywords = baseSearchResponse === false ? [] : processBaseSearchResponse(baseSearchResponse, keyword);
       const advancedTypeaheadKeywords = advancedTypeaheadResponse === false ? [] : processAdvancedTypeaheadResponse(advancedTypeaheadResponse);
 
-
       const keywordStrings = [].concat(...[baseSearchKeywords, advancedTypeaheadKeywords].filter(keywordArray => keywordArray !== null));
 
       searchedKeywords.add(keyword);
@@ -183,6 +179,5 @@ function processKeywordResearch(keyword, maxLevels = 2) {
     resolve(result);
   });
 }
-
 
 module.exports = processKeywordResearch;

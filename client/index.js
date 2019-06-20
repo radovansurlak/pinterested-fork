@@ -2,7 +2,7 @@ import Vue from 'vue';
 import SocialSharing from 'vue-social-sharing';
 
 import Vuetify, {
-  VApp, // required
+  VApp,
   VBtn,
   VSelect,
   VForm,
