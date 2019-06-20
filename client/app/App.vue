@@ -72,12 +72,16 @@
       </v-btn>
       <ul v-if="keywordData" class="keyword-list">
         <header class="keyword-header">
-          <p>Keyword</p>
-          <p v-if="selectedVersion === 1">Search Volume</p>
+          <p class="header-label-keyword">Keyword</p>
+          <template v-if="selectedVersion === 1">
+            <p class="header-label-competition">Competition</p>
+            <p class="header-label-search-volume">Search Volume</p>
+          </template>
         </header>
         <template v-if="selectedVersion === 1">
-          <li class="keyword-item" v-for="(keywordData, index) in keywordData" :key="index">
+          <li class="keyword-item keyword-item-grid" v-for="(keywordData, index) in keywordData" :key="index">
             <span class="keyword-title">{{keywordData.keyword}}</span>
+            <span class="keyword-competition">{{keywordData.KEYWORD_COMPETITION_BAND}}</span>
             <span class="keyword-volume">{{keywordData.KEYWORD_QUERY_VOLUME}}</span>
           </li>
         </template>
@@ -351,15 +355,19 @@ export default {
 
 .keyword {
   &-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     padding: 10px;
     font-size: 17px;
   }
   &-item {
-    display: flex;
-    justify-content: space-between;
-
+    &-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+    }
+    display: block;
+    text-align: left;
     list-style: none;
     padding: 10px 15px;
     margin-bottom: 10px;
@@ -373,6 +381,23 @@ export default {
   }
   &-title {
     font-weight: 600;
+    text-align: left;
+  }
+  &-competition {
+    text-align: center;
+  }
+  &-volume {
+    text-align: right;
+  }
+}
+
+
+.header-label {
+  &-keyword {
+    text-align: left;
+  }
+  &-search-volume {
+    text-align: right;
   }
 }
 .no-response-message {

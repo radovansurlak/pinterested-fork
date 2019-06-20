@@ -1,7 +1,6 @@
 const express = require('express');
 const compression = require('compression');
 const puppeteer = require('puppeteer');
-const jsonfile = require('jsonfile');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const sslRedirect = require('heroku-ssl-redirect');
@@ -10,7 +9,9 @@ require('dotenv').config();
 
 const app = express();
 
-const getKeywordData = require('./getKeywordData');
+const getKeywordData = require('./server/getKeywordData');
+const formatVolumeForSort = require('./server/formatVolumeForSort');
+const restorePinterestSession = require('./server/restorePinterestSession');
 
 app.use(compression());
 app.use(helmet());
@@ -27,21 +28,6 @@ app.use((req, res, next) => {
   next();
 });
 
-function restoreSession(page) {
-  return new Promise(async (resolve, reject) => {
-    const cookies = jsonfile.readFileSync('./cookies.json');
-    if (cookies) {
-      if (cookies.length !== 0) {
-        for (const cookie of cookies) {
-          await page.setCookie(cookie);
-        }
-        resolve('Session has been loaded in the browser');
-      }
-    } else {
-      reject(new Error('No cookies.json file was found'));
-    }
-  });
-}
 
 (async () => {
   const port = process.env.PORT || 3000;
@@ -52,7 +38,7 @@ function restoreSession(page) {
 
   const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   const page = await browser.newPage();
-  await restoreSession(page);
+  await restorePinterestSession(page);
 
   await page.goto('https://ads.pinterest.com');
 
@@ -88,15 +74,35 @@ function restoreSession(page) {
   app.get('/analyse/:keyword', async (req, res) => {
     const { keyword } = req.params;
 
-
-    const data = await page.evaluate(async (keyword, advertiserId) => {
+    const keywordData = await page.evaluate(async (keyword, advertiserId) => {
       const data = await fetch(`https://api.pinterest.com/ads/v0/keyword_planner/related_keywords/keywords/?country=US&month=6&keywords=${keyword}&advertiser=${advertiserId}`, {
         credentials: 'include', headers: { accept: 'application/json, text/plain, */*', 'sec-fetch-mode': 'cors' }, referrer: 'https://ads.pinterest.com/', referrerPolicy: 'origin', body: null, method: 'GET', mode: 'cors',
       });
       const parsedData = await data.json();
-      return JSON.stringify(parsedData.data);
+      return parsedData.data;
     }, keyword, advertiserId);
-    res.json(JSON.parse(data));
+
+    if (keywordData === null) {
+      res.json(null);
+      return;
+    }
+
+    const dataWithSortVolume = keywordData.map((keywordObject) => {
+      keywordObject.sortVolume = formatVolumeForSort(keywordObject.metrics.KEYWORD_QUERY_VOLUME);
+      return keywordObject;
+    });
+
+    const dataSortedBySearchVolume = dataWithSortVolume.sort((current, next) => {
+      if (current.sortVolume < next.sortVolume) {
+        return 1;
+      }
+      if (current.sortVolume > next.sortVolume) {
+        return -1;
+      }
+      return 0;
+    });
+
+    res.json(dataSortedBySearchVolume);
   });
 
   app.listen(port, () => console.log(`Pinterest keyword tool listening on port ${port}!`));
