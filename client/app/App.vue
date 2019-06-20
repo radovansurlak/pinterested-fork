@@ -88,7 +88,7 @@
         </template>
       </ul>
       <template v-if="emptyResponse.isEmpty">
-        <h3>Sorry, we received no suggestions for "{{emptyResponse.searchedKeyword}}"</h3>
+        <h3 class="no-response-message">Sorry, we received no suggestions for "{{emptyResponse.searchedKeyword}}"</h3>
       </template>
     </v-app>
   </main>
@@ -240,6 +240,7 @@ export default {
 
 <style lang="scss">
 .application-main {
+  padding: 0px 4px;
   width: 100%;
   text-align: center;
   display: flex;
@@ -270,7 +271,10 @@ export default {
   border-radius: 5px;
   margin-top: 50px;
   margin-bottom: 20px;
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 10px;
   font-weight: 500;
   font-family: Montserrat;
   width: 92%;
@@ -312,23 +316,37 @@ export default {
   outline: none;
 }
 
-.language-selector {
-  max-width: 200px;
-  white-space: nowrap;
+.v-input {
+  margin-left: 10px;
+  margin-right: 10px;
+  &.language-selector {
+    flex-basis: 150px;
+    white-space: nowrap;
+  } 
+  &.keyword-input {
+    flex-basis: 260px;
+  }
 }
+
 
 .keyword-form {
   display: flex;
   flex-wrap: wrap;
 }
 
-.v-btn.search-button,
-.v-btn.download-button {
-  font-weight: 600;
-}
-
-.v-btn.download-button {
-  margin-bottom: 20px;
+.v-btn {
+  &.search-button,
+  &.download-button {
+    font-weight: 600;
+  }
+  &.search-button {
+    flex-basis: 80px;
+    flex-grow: 1;
+    min-width: 135px;
+  }
+  &.download-button {
+    margin-bottom: 20px;
+  }
 }
 
 .keyword {
@@ -357,10 +375,8 @@ export default {
     font-weight: 600;
   }
 }
-
-.v-input.keyword-input {
-  margin-right: 20px;
-  flex-basis: 260px;
+.no-response-message {
+  padding: 15px 0px;
 }
 </style>
 
