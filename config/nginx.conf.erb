@@ -33,11 +33,11 @@ http {
     keepalive_timeout 5;
     client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
 
-    root app/dist;
+    root /dist;
     index index.html;
-    
+
     location / {
       proxy_pass      http://127.0.0.1:8000;
     }
+    
   }
-}
