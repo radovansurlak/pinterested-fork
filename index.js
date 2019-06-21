@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const sslRedirect = require('heroku-ssl-redirect');
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ const restorePinterestSession = require('./server/restorePinterestSession');
 
 app.use(compression());
 app.use(helmet());
+
 app.use(sslRedirect());
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,7 +33,8 @@ app.use((req, res, next) => {
 
 // Using Pinterest session in Puppeteer to access internal Pinterest API
 (async () => {
-  const port = process.env.PORT || 3000;
+  // const port = process.env.PORT || 3000;
+  const port = 8000;
 
   const loginEmail = process.env.PINTEREST_EMAIL;
   const loginPassword = process.env.PINTEREST_PASSWORD;
@@ -107,4 +110,5 @@ app.use((req, res, next) => {
     res.json(dataSortedBySearchVolume);
   });
   app.listen(port, () => console.log(`Pinterest keyword tool listening on port ${port}!`));
+  fs.openSync('/tmp/app-initialized', 'w');
 })();
