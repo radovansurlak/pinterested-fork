@@ -29,18 +29,15 @@ http {
 
   server {
     listen <%= ENV["PORT"] %>;
-    if ($http_x_forwarded_proto != "https") {
-      return 301 https://$host$request_uri;
-    }
-    server_name _;
+    server_name pinterested;
     keepalive_timeout 5;
     client_max_body_size <%= ENV['NGINX_CLIENT_MAX_BODY_SIZE'] || 1 %>M;
 
-    index index.html
-    root /dist
-  }
-
-  location / {
-    proxy_pass      http://127.0.0.1:8000;
+    root /dist;
+    index index.html;
+    
+    location / {
+      proxy_pass      http://127.0.0.1:8000;
+    }
   }
 }
