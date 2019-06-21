@@ -1,0 +1,1 @@
+web: bin/start-nginx pm2-runtime start ecosystem.config.js --env production
